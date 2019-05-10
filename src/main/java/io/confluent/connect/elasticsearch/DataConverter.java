@@ -110,7 +110,8 @@ public class DataConverter {
       String index,
       String type,
       boolean ignoreKey,
-      boolean ignoreSchema
+      boolean ignoreSchema,
+      String routingFieldName
   ) {
     if (record.value() == null) {
       switch (behaviorOnNullValues) {
@@ -159,10 +160,12 @@ public class DataConverter {
     } else {
       id = convertKey(record.keySchema(), record.key());
     }
+    final String routing;
+    routing = ((HashMap) record.value()).get(routingFieldName).toString();
 
     final String payload = getPayload(record, ignoreSchema);
     final Long version = ignoreKey ? null : record.kafkaOffset();
-    return new IndexableRecord(new Key(index, type, id), payload, version);
+    return new IndexableRecord(new Key(index, type, id), payload, version, routing);
   }
 
   private String getPayload(SinkRecord record, boolean ignoreSchema) {

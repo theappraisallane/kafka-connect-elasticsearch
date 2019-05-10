@@ -88,6 +88,9 @@ public class ElasticsearchSinkConnectorConfig extends AbstractConfig {
 
   public static final String TYPE_NAME_CONFIG = "type.name";
   private static final String TYPE_NAME_DOC = "The Elasticsearch type name to use when indexing.";
+  public static final String ROUTING_FIELD_NAME = "routing.field.name";
+  private static final String ROUTING_FIELD_NAME_DOC =
+            "Specify which filed should be used for routing, it must be a leaf field.";
 
   @Deprecated
   public static final String TOPIC_INDEX_MAP_CONFIG = "topic.index.map";
@@ -291,24 +294,24 @@ public class ElasticsearchSinkConnectorConfig extends AbstractConfig {
         Width.SHORT,
         "Retry Backoff (ms)"
       ).define(
-        CONNECTION_TIMEOUT_MS_CONFIG, 
-        Type.INT, 
-        1000, 
-        Importance.LOW, 
+        CONNECTION_TIMEOUT_MS_CONFIG,
+        Type.INT,
+        1000,
+        Importance.LOW,
         CONNECTION_TIMEOUT_MS_CONFIG_DOC,
-        group, 
-        ++order, 
-        Width.SHORT, 
+        group,
+        ++order,
+        Width.SHORT,
         "Connection Timeout"
         ).define(
-        READ_TIMEOUT_MS_CONFIG, 
-        Type.INT, 
-        3000, 
-        Importance.LOW, 
+        READ_TIMEOUT_MS_CONFIG,
+        Type.INT,
+        3000,
+        Importance.LOW,
         READ_TIMEOUT_MS_CONFIG_DOC,
         group,
-        ++order, 
-        Width.SHORT, 
+        ++order,
+        Width.SHORT,
         "Read Timeout"
     ).define(
         AUTO_CREATE_INDICES_AT_START_CONFIG,
@@ -442,7 +445,17 @@ public class ElasticsearchSinkConnectorConfig extends AbstractConfig {
         group,
         ++order,
         Width.SHORT,
-        "Write method");
+        "Write method"
+    ).define(
+        ROUTING_FIELD_NAME,
+        Type.STRING,
+        null,
+        Importance.LOW,
+        ROUTING_FIELD_NAME_DOC,
+        group,
+        ++order,
+        Width.SHORT,
+        "Field used for routing");
   }
 
   public static final ConfigDef CONFIG = baseConfigDef();

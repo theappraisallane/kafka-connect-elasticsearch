@@ -40,6 +40,7 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
+import io.searchbox.params.Parameters;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.IndicesExists;
 import io.searchbox.indices.mapping.GetMapping;
@@ -359,7 +360,8 @@ public class JestElasticsearchClient implements ElasticsearchClient {
     Index.Builder req = new Index.Builder(record.payload)
         .index(record.key.index)
         .type(record.key.type)
-        .id(record.key.id);
+        .id(record.key.id)
+        .setParameter(Parameters.ROUTING, record.routing);
     if (record.version != null) {
       req.setParameter("version_type", "external").setParameter("version", record.version);
     }

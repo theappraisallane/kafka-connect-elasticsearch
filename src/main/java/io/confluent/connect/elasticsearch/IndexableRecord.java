@@ -22,11 +22,13 @@ public class IndexableRecord {
   public final Key key;
   public final String payload;
   public final Long version;
+  public final String routing;
 
-  public IndexableRecord(Key key, String payload, Long version) {
+  public IndexableRecord(Key key, String payload, Long version, String routing) {
     this.key = key;
     this.version = version;
     this.payload = payload;
+    this.routing = routing;
   }
 
   @Override

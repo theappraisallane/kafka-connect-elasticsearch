@@ -49,6 +49,7 @@ public class ElasticsearchWriter {
   private final BulkProcessor<IndexableRecord, ?> bulkProcessor;
   private final boolean dropInvalidMessage;
   private final BehaviorOnNullValues behaviorOnNullValues;
+  private String routingFieldName;
   private final DataConverter converter;
 
   private final Set<String> existingMappings;
@@ -72,7 +73,8 @@ public class ElasticsearchWriter {
       long retryBackoffMs,
       boolean dropInvalidMessage,
       BehaviorOnNullValues behaviorOnNullValues,
-      BehaviorOnMalformedDoc behaviorOnMalformedDoc
+      BehaviorOnMalformedDoc behaviorOnMalformedDoc,
+      String routingFieldName
   ) {
     this.client = client;
     this.type = type;
@@ -86,6 +88,7 @@ public class ElasticsearchWriter {
     this.behaviorOnNullValues = behaviorOnNullValues;
     this.converter = new DataConverter(useCompactMapEntries, behaviorOnNullValues);
     this.behaviorOnMalformedDoc = behaviorOnMalformedDoc;
+    this.routingFieldName = routingFieldName;
 
     bulkProcessor = new BulkProcessor<>(
         new SystemTime(),
@@ -121,9 +124,15 @@ public class ElasticsearchWriter {
     private boolean dropInvalidMessage;
     private BehaviorOnNullValues behaviorOnNullValues = BehaviorOnNullValues.DEFAULT;
     private BehaviorOnMalformedDoc behaviorOnMalformedDoc;
+    private String routingFieldName;
 
     public Builder(ElasticsearchClient client) {
       this.client = client;
+    }
+
+    public Builder setRoutingFieldName(String routingFieldName) {
+      this.routingFieldName = routingFieldName;
+      return this;
     }
 
     public Builder setType(String type) {
@@ -229,7 +238,8 @@ public class ElasticsearchWriter {
           retryBackoffMs,
           dropInvalidMessage,
           behaviorOnNullValues,
-          behaviorOnMalformedDoc
+          behaviorOnMalformedDoc,
+          routingFieldName
       );
     }
   }
@@ -287,7 +297,8 @@ public class ElasticsearchWriter {
           index,
           type,
           ignoreKey,
-          ignoreSchema);
+          ignoreSchema,
+          routingFieldName);
       if (record != null) {
         bulkProcessor.add(record, flushTimeoutMs);
       }
